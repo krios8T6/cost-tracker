@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cost Tracker</title>
+  <style>
+    body { font-family: -apple-system, sans-serif; max-width: 400px; margin: 20px auto; padding: 0 15px; background: #0f172a; color: #f8fafc; }
+    input, button { width: 100%; padding: 10px; margin: 5px 0; border-radius: 6px; box-sizing: border-box; border: 1px solid #334155; }
+    input { background: #1e293b; color: white; }
+    button { background: #10b981; color: black; font-weight: bold; border: none; cursor: pointer; }
+    .item { background: #1e293b; padding: 10px; margin-top: 8px; border-radius: 6px; display: flex; justify-content: space-between; }
+  </style>
+</head>
+<body>
+  <h2>Cost Tracker</h2>
+  <form id="trackerForm">
+    <input type="text" id="title" placeholder="Item (e.g. Fuel, Oil)" required>
+    <input type="number" id="cost" placeholder="Cost (₹)" required>
+    <input type="number" id="km" placeholder="Odometer (km)" required>
+    <button type="submit">Add Entry</button>
+  </form>
+
+  <h3>Entries</h3>
+  <div id="list"></div>
+
+  <script>
+    let logs = JSON.parse(localStorage.getItem('logs')) || [];
+
+    function render() {
+      localStorage.setItem('logs', JSON.stringify(logs));
+      document.getElementById('list').innerHTML = logs.map(x => 
+        `<div class="item"><span>${x.title} (${x.km} km)</span><b>₹${x.cost}</b></div>`
+      ).join('');
+    }
+
+    document.getElementById('trackerForm').onsubmit = (e) => {
+      e.preventDefault();
+      logs.unshift({
+        title: document.getElementById('title').value,
+        cost: document.getElementById('cost').value,
+        km: document.getElementById('km').value
+      });
+      e.target.reset();
+      render();
+    };
+
+    render();
+  </script>
+</body>
+</html>
